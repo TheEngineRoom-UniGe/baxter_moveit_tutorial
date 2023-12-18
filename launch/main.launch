@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>     
+
+  <arg name="port1"           	     default="/dev/ttyACM0" />
+  <arg name="save"           	     	     default="False" />
+  <arg name="experiment_ID"          	     default="trial2" />
+  <arg name="base_saving_path"              default="/externalSSD/htn_experiment"/>
+  
+    
+
+  <node name="gripper_action_server" pkg="baxter_interface" type="gripper_action_server.py" output="log" />
+  <node name="joint_action_server_right" pkg="baxter_interface" type="joint_trajectory_action_server.py" args="--limb right --mode velocity" required="true" output="log"/>
+  <node name="joint_action_server_left" pkg="baxter_interface" type="joint_trajectory_action_server.py" args="--limb left --mode velocity" required="true" output="log"/>
+  
+  <!--<node name="hand_obstacle" pkg="baxter_moveit" type="obstacle_handler.py" output="screen" />-->
+  <include file="$(find baxter_moveit)/launch/moveit_config.launch" />  
+  <node name="obstacle_handler" pkg="baxter_moveit_tutorial" type="obstacle_handler.py" output="log" />
+  
+  <!-- Run the Joint Trajectory Action -->
+  <node name="trajectory_client" pkg="baxter_moveit_tutorial" type="joint_trajectory_client.py" args="--limb right" output="screen" />
+  <node name="joint_states_service" pkg="baxter_moveit_tutorial" type="joint_states_service.py" output="screen" />
+
+
+</launch>
